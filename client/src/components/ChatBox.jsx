@@ -50,14 +50,27 @@ const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, soc
                 key={i}
                 className={`d-flex mb-2 ${m.sender === currentUser ? 'justify-content-end' : 'justify-content-start'}`}
               >
-                <div className={`p-2 rounded-pill ${m.sender === currentUser ? 'bg-primary text-white' : 'bg-light text-dark'}`}>
-                  <strong>{m.sender}</strong>
-                   {m.text}
+             <div className="d-flex mb-2 align-items-end">
+  {m.sender !== currentUser && (
+    <img
+      src={m.avatarUrl || '/default-avatar.png'}  // fallback if no avatar
+      alt={m.sender}
+      className="rounded-circle me-2"
+      style={{ width: '32px', height: '32px' }}
+    />
+  )}
+  <div className={`p-2 rounded ${m.sender === currentUser ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '75%' }}>
+    <div><strong>{m.sender}</strong></div>
+    <div>{m.text}</div>
+    <div className="text-end">
+      <small className="text-muted">
+        {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+      </small>
+    </div>
+  </div>
+</div>
 
-                </div>
-                  <small className="text-muted">
-    {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-  </small>
+        
               </div>
             ))}
             <div ref={messagesEndRef} />
