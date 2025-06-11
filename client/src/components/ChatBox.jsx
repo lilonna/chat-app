@@ -1,53 +1,51 @@
-import { useEffect, useState } from 'react';
-import { fetchMessages } from '../services/api';
-import io from 'socket.io-client';
+import React, { useState } from 'react';
 
-const socket = io('http://localhost:3001');
-
-function ChatBox({ username }) {
-  const [text, setText] = useState('');
-  const [recipient, setRecipient] = useState('');
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    socket.emit('login', username);
-    fetchMessages().then(res => setMessages(res.data));
-
-    socket.on('message', msg => setMessages(prev => [...prev, msg]));
-
-    return () => socket.off('message');
-  }, [username]);
+const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, socket, setMessages }) => {
+  const [inputMessage, setInputMessage] = useState('');
 
   const sendMessage = () => {
-    if (!text || !recipient) return;
-    socket.emit('message', { username, recipient, text });
-    setText('');
+    const msg = {
+      sender: currentUser,
+      recipient: selectedUser,
+      text: inputMessage
+    };
+    socket.emit('message', msg);
+    setMessages(prev => [...prev, { ...msg, timestamp: new Date() }]);
+    setInputMessage('');
   };
 
   return (
-    <div>
-      <h2>Welcome, {username}</h2>
-      <input
-        placeholder="Recipient"
-        value={recipient}
-        onChange={(e) => setRecipient(e.target.value)}
-      />
-      <div style={{ border: '1px solid #ccc', height: 200, overflowY: 'scroll' }}>
-        {messages
-          .filter(m => m.username === username || m.recipient === username)
-          .map((msg, idx) => (
-            <div key={idx}><b>{msg.username}</b>: {msg.text}</div>
-          ))}
+    <div style={{ display: 'flex' }}>
+  
+      <div style={{ width: '30%', borderRight: '1px solid gray' }}>
+        <h3>Users</h3>
+        {users.map((user) => (
+          <div key={user._id} onClick={() => onSelectUser(user)} style={{ cursor: 'pointer' }}>
+            {user.username}
+          </div>
+        ))}
       </div>
-      <input
-        placeholder="Message"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-      />
-      <button onClick={sendMessage}>Send</button>
+
+    
+      <div style={{ flex: 1, padding: '1rem' }}>
+        <h3>Chat with {selectedUser}</h3>
+        <div style={{ height: '300px', overflowY: 'scroll' }}>
+          {messages.map((m, i) => (
+            <div key={i} style={{ textAlign: m.sender === currentUser ? 'right' : 'left' }}>
+              <p><strong>{m.sender}:</strong> {m.text}</p>
+            </div>
+          ))}
+        </div>
+        <input
+          value={inputMessage}
+          onChange={e => setInputMessage(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && sendMessage()}
+          placeholder="Type a message..."
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
     </div>
   );
-}
+};
 
 export default ChatBox;

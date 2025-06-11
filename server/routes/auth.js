@@ -21,4 +21,10 @@ router.post('/login', async (req, res) => {
   res.json({ message: 'Login successful', username });
 });
 
+router.get('/', async (req, res) => {
+  const { currentUser } = req.query;
+  const users = await User.find({ username: { $ne: currentUser } });
+  res.json(users);
+});
+
 module.exports = router;
