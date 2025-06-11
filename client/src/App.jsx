@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import ChatBox from './components/ChatBox';
-import { getUsers, getMessages } from './services/api';
+import { getUsers, getConversation } from './services/api';
 
 const socket = io('http://localhost:3001');
 
@@ -30,7 +30,7 @@ function App() {
 
   const handleSelectUser = async (user) => {
     setSelectedUser(user.username);
-    const res = await getMessages(currentUser, user.username);
+    const res = await getConversation(currentUser, user.username);
     setMessages(res.data);
   };
 

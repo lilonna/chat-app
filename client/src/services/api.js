@@ -6,3 +6,5 @@ export const login = (data) => API.post('/auth/login', data);
 export const getUsers = (currentUser) => API.get(`/auth?currentUser=${currentUser}`);
 export const fetchMessages = () => API.get('/messages');
 export const getConversation = (user1, user2) => API.get(`/messages/${user1}/${user2}`);
+export const getConversations = (username) => API.get(`/messages/conversations/${username}`);
+

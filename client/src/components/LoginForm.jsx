@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { login, register } from '../services/api';
 
-function LoginForm({ setUsername, onLogin }) {
+function LoginForm({ setCurrentUser }) {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState('');
@@ -11,8 +11,7 @@ function LoginForm({ setUsername, onLogin }) {
     try {
       if (isRegister) await register(formData);
       const res = await login(formData);
-      setUsername(res.data.username);
-      onLogin(res.data.username);
+     setCurrentUser(res.data.username);  
     } catch (err) {
       setError(err.response?.data?.error || 'Error');
     }
