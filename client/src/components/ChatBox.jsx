@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { searchUsers } from "../services/api";
+
 
 const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, socket, setMessages }) => {
   const [inputMessage, setInputMessage] = useState('');
@@ -8,7 +10,7 @@ const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, soc
     if (!inputMessage.trim()) return;
     const msg = {
       sender: currentUser,
-      recipient: selectedUser,
+      recipient: selectedUser.username,
       text: inputMessage
     };
     socket.emit('message', msg);
@@ -19,29 +21,62 @@ const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, soc
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+  const [searchTerm, setSearchTerm] = useState('');
+const [searchResults, setSearchResults] = useState([]);
+
+const handleSearch = async () => {
+  const res = await searchUsers(searchTerm, currentUser);
+  setSearchResults(res.data);
+};
+
+
 
   return (
     <div className="container-fluid py-3" style={{ height: '90vh' }}>
       <div className="row h-100 border rounded shadow">
         
-        {/* User List */}
-        <div className="col-3 border-end bg-light p-3 overflow-auto">
-          <h5>Users</h5>
-          {users.map((user) => (
-            <div
-              key={user._id}
-              onClick={() => onSelectUser(user)}
-              className={`p-2 rounded mb-2 ${user.username === selectedUser ? 'bg-secondary text-white' : 'bg-white'} border`}
-              style={{ cursor: 'pointer' }}
-            >
-              {user.username}
-            </div>
-          ))}
-        </div>
+   
+
+   <div className="col-3 border-end bg-light p-3 overflow-auto">
+  <h5>Users</h5>
+
+  <input
+    type="text"
+    className="form-control mb-2"
+    placeholder="Search users..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+  />
+
+  {searchResults.map(user => (
+    <div
+      key={user._id}
+      onClick={() => onSelectUser(user)}
+      className="p-2 rounded mb-2 bg-info text-white border"
+      style={{ cursor: 'pointer' }}
+    >
+      {user.username}
+    </div>
+  ))}
+
+  {/* Conversation user list */}
+  {users.map((user) => (
+    <div
+      key={user._id}
+      onClick={() => onSelectUser(user)}
+      className={`p-2 rounded mb-2 ${user.username === selectedUser?.username ? 'bg-secondary text-white' : 'bg-white'} border`}
+      style={{ cursor: 'pointer' }}
+    >
+      {user.username}
+    </div>
+  ))}
+</div>
+
 
         {/* Chat Section */}
         <div className="col d-flex flex-column p-3">
-          <h5>Chat with {selectedUser || '...'}</h5>
+          <h5>Chat with {selectedUser?.username || '...'}</h5>
           
           {/* Messages Area */}
           <div className="flex-grow-1 bg-body-secondary p-3 rounded overflow-auto mb-3" style={{ height: '100%', maxHeight: '60vh' }}>

@@ -11,6 +11,24 @@ router.post('/register', async (req, res) => {
     res.status(400).json({ error: 'Username already exists' });
   }
 });
+// search
+router.get('/search', async (req, res) => {
+  const { query, currentUser } = req.query;
+
+  try {
+    const users = await User.find({
+      username: {
+        $regex: new RegExp(query, 'i'), 
+        $ne: currentUser               
+      }
+    }).select('_id username avatarUrl'); 
+
+    res.json(users);
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Search failed' });
+  }
+});
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;

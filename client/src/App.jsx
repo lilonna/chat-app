@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import LoginForm from './components/LoginForm';
 import ChatBox from './components/ChatBox';
-import { getUsers, getConversation } from './services/api';
+import { getConversations } from './services/api';
+import { getConversation } from './services/api';
+
 
 const socket = io('http://localhost:3001');
 
@@ -12,12 +14,16 @@ function App() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    if (currentUser) {
-      socket.emit('login', currentUser);
-      getUsers(currentUser).then(res => setUsers(res.data));
-    }
-  }, [currentUser]);
+useEffect(() => {
+  if (currentUser) {
+    socket.emit('login', currentUser.username);
+    getConversations(currentUser.username).then(res => {
+      console.log('Conversations:', res.data); // ← Add this
+      setUsers(res.data);
+    }); // only users with conversations
+     
+  }
+}, [currentUser]);
 
   useEffect(() => {
     socket.on('message', (msg) => {
@@ -29,7 +35,7 @@ function App() {
   }, [selectedUser]);
 
   const handleSelectUser = async (user) => {
-    setSelectedUser(user.username);
+    setSelectedUser(user);
     const res = await getConversation(currentUser, user.username);
     setMessages(res.data);
   };
