@@ -6,7 +6,7 @@ const { Server } = require('socket.io');
 
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/messages');
-const postRoutes = require('./routes/posts');
+const postRoutes = require('./routes/post');
 const userRoutes = require('./routes/users');
 const setupSocket = require('./socket');
 
