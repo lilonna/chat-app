@@ -11,6 +11,16 @@ router.post('/register', async (req, res) => {
     res.status(400).json({ error: 'Username already exists' });
   }
 });
+router.get('/profile/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // search
 router.get('/search', async (req, res) => {
   const { query, currentUser } = req.query;

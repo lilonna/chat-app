@@ -8,5 +8,7 @@ export const fetchMessages = () => API.get('/messages');
 export const getConversation = (user1, user2) => API.get(`/messages/${user1}/${user2}`);
 export const getConversations = (username) => API.get(`/messages/conversations/${username}`);
 export const searchUsers = (query, currentUser) => API.get(`/auth/search?query=${query}&currentUser=${currentUser}`);
+export const getFeed = (userId) => API.get(`/post/feed?userId=${userId}`);
+export const getUserProfile = (username) => API.get(`/auth/profile/${username}`);
 
 
