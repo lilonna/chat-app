@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
 import { getConversations, getConversation } from './services/api';
+import ChatBox from './components/ChatBox';
 
 const socket = io('http://localhost:3001');
 
@@ -17,8 +18,10 @@ function App() {
 
   useEffect(() => {
     if (currentUser) {
-      socket.emit('login', currentUser.username);
-      getConversations(currentUser.username).then(res => {
+      socket.emit('login', currentUser);
+       console.log('current users:', currentUser);
+      getConversations(currentUser).then(res => {
+        console.log('Fetched conversation users:', res.data);
         setUsers(res.data); // users with prior conversations
       });
     }
@@ -50,7 +53,7 @@ function App() {
         <Route path="/home" element={<HomePage currentUser={currentUser} />} />
         <Route path="/profile/:username" element={<ProfilePage currentUser={currentUser} />} />
         <Route path="/chat" element={
-          <ChatPage
+          <ChatBox
             currentUser={currentUser}
             users={users}
             selectedUser={selectedUser}
