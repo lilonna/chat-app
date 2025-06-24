@@ -20,18 +20,29 @@ router.get('/:user1/:user2', async (req, res) => {
 });
 router.get('/conversations/:username', async (req, res) => {
   const username = req.params.username;
+  console.log('Looking for conversations for:', username);
   try {
     const sent = await Message.distinct('recipient', { sender: username });
     const received = await Message.distinct('sender', { recipient: username });
     const allUsernames = [...new Set([...sent, ...received])];
-    const users = await User.find({
+
+    // If users exist in the User collection, fetch them
+    let users = await User.find({
       username: { $in: allUsernames }
     }).select('_id username avatar');
-    res.json(users);
+
+    // Fallback: Add users from messages if not found in User collection
+    const foundUsernames = users.map(u => u.username);
+    const missing = allUsernames.filter(u => !foundUsernames.includes(u));
+    const fallbackUsers = missing.map(u => ({ username: u, avatar: null }));
+
+    res.json([...users, ...fallbackUsers]);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to load conversations' });
   }
 });
+
 
 
 module.exports = router;

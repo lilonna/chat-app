@@ -16,16 +16,17 @@ function App() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    if (currentUser) {
-      socket.emit('login', currentUser);
-       console.log('current users:', currentUser);
-      getConversations(currentUser).then(res => {
-        console.log('Fetched conversation users:', res.data);
-        setUsers(res.data); // users with prior conversations
-      });
-    }
-  }, [currentUser]);
+useEffect(() => {
+  if (currentUser) {
+    const username = typeof currentUser === 'string' ? currentUser : currentUser.username;
+    console.log('Fetching conversations for:', username); // Debug line
+    getConversations(username).then(res => {
+      console.log('Fetched conversation users:', res.data);
+      setUsers(res.data);
+    });
+  }
+}, [currentUser]);
+
 
   useEffect(() => {
     socket.on('message', (msg) => {

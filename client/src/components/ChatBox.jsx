@@ -38,9 +38,9 @@ const handleSearch = async () => {
     {/* Sidebar */}
     <div className="col-md-3 col-12 border-end bg-light p-3 d-flex flex-column" style={{ overflowY: 'auto' }}>
       <div className="mb-4 text-center">
-        <h5>Welcome, {currentUser.username}</h5>
+        <h5>Welcome, {currentUser}</h5>
         <img
-          src={currentUser.avatar || '/default-avatar.png'}
+          src={currentUser || '/default-avatar.png'}
           alt="Profile"
           className="rounded-circle"
           style={{ width: '60px', height: '60px' }}
