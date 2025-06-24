@@ -4,15 +4,27 @@ import PostCard from './PostCard';
 
 const HomeFeed = ({ currentUser }) => {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getFeed(currentUser.username).then(res => setPosts(res.data));
+    if (currentUser?.username) {
+      getFeed(currentUser.username).then(res => {
+        setPosts(res.data);
+        setLoading(false);
+      });
+    }
   }, [currentUser]);
 
   return (
-    <div className="p-3">
-      <h4>Home Feed</h4>
-      {posts.map(post => <PostCard key={post._id} post={post} />)}
+    <div className="p-4">
+      <h3 className="mb-4">📢 Home Feed</h3>
+      {loading ? (
+        <div className="text-muted">Loading posts...</div>
+      ) : posts.length > 0 ? (
+        posts.map(post => <PostCard key={post._id} post={post} />)
+      ) : (
+        <div className="text-muted">No posts to show.</div>
+      )}
     </div>
   );
 };
