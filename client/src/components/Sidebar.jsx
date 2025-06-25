@@ -28,6 +28,12 @@ const Sidebar = ({ currentUser }) => (
           💬 Chat
         </Link>
       </li>
+      <li className="mb-3">
+  <Link to="/create-post" className="text-decoration-none text-dark fw-medium">
+    ✍️ Create Post
+  </Link>
+</li>
+
     </ul>
   </div>
 );

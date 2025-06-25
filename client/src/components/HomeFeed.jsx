@@ -6,14 +6,15 @@ const HomeFeed = ({ currentUser }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (currentUser?.username) {
-      getFeed(currentUser.username).then(res => {
-        setPosts(res.data);
-        setLoading(false);
-      });
-    }
-  }, [currentUser]);
+useEffect(() => {
+  if (currentUser?._id) {
+    getFeed(currentUser._id).then(res => {
+      setPosts(res.data);
+      setLoading(false);
+    });
+  }
+}, [currentUser]);
+
 
   return (
     <div className="p-4">

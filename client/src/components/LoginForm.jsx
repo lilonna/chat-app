@@ -20,7 +20,7 @@ function LoginForm({ setCurrentUser }) {
     try {
       if (isRegister) await register(formData);
       const res = await login(formData);
-      setCurrentUser(res.data.username);  
+      setCurrentUser(res.data.user);  
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred. Please try again.');
     }

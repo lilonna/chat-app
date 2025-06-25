@@ -13,13 +13,14 @@ const PostCard = ({ post }) => (
         <h6 className="mb-0 fw-bold text-primary">@{post.author?.username || post.author}</h6>
       </div>
       <p className="text-dark mb-2" style={{ fontSize: "1rem" }}>{post.content}</p>
-      {post.image && (
-        <img
-          src={`http://localhost:3001/${post.image}`}
-          alt="Post"
-          className="img-fluid rounded mb-2"
-        />
-      )}
+    {post.image && (
+  <img
+    src={`http://localhost:3001/${post.image.replace(/\\/g, '/')}`}
+    alt="Post"
+    className="img-fluid rounded mb-2"
+  />
+)}
+
       <small className="text-muted">{new Date(post.timestamp).toLocaleString()}</small>
     </div>
   </div>

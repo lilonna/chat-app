@@ -7,6 +7,7 @@ import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
 import { getConversations, getConversation } from './services/api';
 import ChatBox from './components/ChatBox';
+import CreatePostPage from './pages/CreatePostPage';
 
 const socket = io('http://localhost:3001');
 
@@ -53,6 +54,8 @@ useEffect(() => {
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/home" element={<HomePage currentUser={currentUser} />} />
         <Route path="/profile/:username" element={<ProfilePage currentUser={currentUser} />} />
+        <Route path="/create-post" element={<CreatePostPage currentUser={currentUser} />} />
+
         <Route path="/chat" element={
           <ChatBox
             currentUser={currentUser}

@@ -46,8 +46,9 @@ router.post('/login', async (req, res) => {
   if (!user || user.password !== password) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
-  res.json({ message: 'Login successful', username });
+  res.json({ user: { _id: user._id, username: user.username } });
 });
+
 
 router.get('/', async (req, res) => {
   const { currentUser } = req.query;

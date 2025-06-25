@@ -4,9 +4,41 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 
 router.get('/', async (req, res) => {
+  console.log('✅ Route HIT for');
   const messages = await Message.find().sort({ timestamp: 1 });
   res.json(messages);
 });
+router.get('/conversations/:username', async (req, res) => {
+  const username = req.params.username.trim().toLowerCase(); // normalize case
+  try {
+    // Case-insensitive queries using regex
+    const sentTo = await Message.distinct('recipient', { 
+      sender: { $regex: new RegExp(`^${username}$`, 'i') } 
+    });
+    
+    const receivedFrom = await Message.distinct('sender', { 
+      recipient: { $regex: new RegExp(`^${username}$`, 'i') } 
+    });
+    if (sentTo.length === 0 && receivedFrom.length === 0) {
+      console.log('No conversations found for user');
+      return res.json([]);
+    }
+
+    const otherUsernames = [...new Set([...sentTo, ...receivedFrom])];
+    const users = await User.find({
+      username: { 
+        $in: otherUsernames.map(name => new RegExp(`^${name}$`, 'i'))
+      }
+    }).select('_id username avatar');
+
+  
+    res.json(users);
+  } catch (err) {
+    console.error('❌ Route error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/:user1/:user2', async (req, res) => {
   const { user1, user2 } = req.params;
   const messages = await Message.find({
@@ -18,31 +50,5 @@ router.get('/:user1/:user2', async (req, res) => {
 
   res.json(messages);
 });
-router.get('/conversations/:username', async (req, res) => {
-  const username = req.params.username;
-  console.log('Looking for conversations for:', username);
-  try {
-    const sent = await Message.distinct('recipient', { sender: username });
-    const received = await Message.distinct('sender', { recipient: username });
-    const allUsernames = [...new Set([...sent, ...received])];
-
-    // If users exist in the User collection, fetch them
-    let users = await User.find({
-      username: { $in: allUsernames }
-    }).select('_id username avatar');
-
-    // Fallback: Add users from messages if not found in User collection
-    const foundUsernames = users.map(u => u.username);
-    const missing = allUsernames.filter(u => !foundUsernames.includes(u));
-    const fallbackUsers = missing.map(u => ({ username: u, avatar: null }));
-
-    res.json([...users, ...fallbackUsers]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to load conversations' });
-  }
-});
-
-
 
 module.exports = router;
