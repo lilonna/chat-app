@@ -6,10 +6,12 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingComment, setLoadingComment] = useState(false);
 
-  // Check if current user liked the post
-  const likedByCurrentUser = post.likes.includes(currentUser._id);
+  const likes = Array.isArray(post.likes) ? post.likes : [];
+  const comments = Array.isArray(post.comments) ? post.comments : [];
+  const author = post.author || {};
 
-  // Handler to toggle like
+  const likedByCurrentUser = likes.includes(currentUser?._id);
+
   const handleLike = async () => {
     if (loadingLike) return;
     setLoadingLike(true);
@@ -17,7 +19,7 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
       const res = await axios.post(`http://localhost:3001/api/posts/post/like/${post._id}`, {
         userId: currentUser._id,
       });
-      onPostUpdate(res.data); // update parent state with new post data
+      onPostUpdate(res.data);
     } catch (error) {
       console.error('Error liking post:', error);
     } finally {
@@ -25,7 +27,6 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
     }
   };
 
-  // Handler to add comment
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!commentText.trim() || loadingComment) return;
@@ -35,7 +36,7 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
         userId: currentUser._id,
         text: commentText.trim(),
       });
-      onPostUpdate(res.data); // update parent state with new post data
+      onPostUpdate(res.data);
       setCommentText('');
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -49,12 +50,12 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
       <div className="card-body">
         <div className="d-flex align-items-center mb-2">
           <img
-            src={post.author?.avatar || "/default-avatar.png"}
+            src={author.avatar || "/default-avatar.png"}
             alt="Avatar"
             className="rounded-circle me-2"
             style={{ width: "40px", height: "40px", objectFit: "cover" }}
           />
-          <h6 className="mb-0 fw-bold text-primary">@{post.author?.username || post.author}</h6>
+          <h6 className="mb-0 fw-bold text-primary">@{author.username || author}</h6>
         </div>
 
         {post.image && (
@@ -78,22 +79,20 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
 
         <p className="text-dark mb-2" style={{ fontSize: "1rem" }}>{post.content}</p>
 
-        {/* Likes and Comments display */}
         <div className="d-flex align-items-center gap-3 mb-2" style={{ fontSize: '0.9rem', color: '#555' }}>
           <div className="d-flex align-items-center" style={{ cursor: 'pointer' }} onClick={handleLike}>
             <span style={{ marginRight: 6, color: likedByCurrentUser ? 'red' : 'gray' }}>
               ❤️
-            </span> 
-            {post.likes.length}
+            </span>
+            {likes.length}
           </div>
           <div className="d-flex align-items-center">
-            <span style={{ marginRight: 6 }}>💬</span> {post.comments.length}
+            <span style={{ marginRight: 6 }}>💬</span> {comments.length}
           </div>
         </div>
 
         <small className="text-muted">{new Date(post.timestamp).toLocaleString()}</small>
 
-        {/* Comment form */}
         <form onSubmit={handleCommentSubmit} className="mt-3">
           <input
             type="text"

@@ -17,12 +17,31 @@ router.post('/post', upload.single('image'), async (req, res) => {
 });
 
 router.get('/post/feed', async (req, res) => {
-  const user = await User.findById(req.query.userId);
-  const posts = await Post.find({
-    author: { $in: [...user.following, user._id] }
-  }).sort({ timestamp: -1 }).populate('author').populate('comments.user');
-  res.json(posts);
+  try {
+    const user = await User.findById(req.query.userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Make sure user.following is an array
+    const followingIds = Array.isArray(user.following) ? user.following : [];
+
+    const posts = await Post.find({
+      author: { $in: [...followingIds, user._id] }
+    })
+      .sort({ timestamp: -1 })
+      .populate('author')
+      .populate('comments.user')
+      .populate('likes'); // populate likes if you want full user info
+
+    res.json(posts);
+  } catch (error) {
+    console.error('Error fetching feed:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
+
 
 router.post('/post/like/:id', async (req, res) => {
   const post = await Post.findById(req.params.id);
