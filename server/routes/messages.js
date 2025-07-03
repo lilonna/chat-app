@@ -48,7 +48,8 @@ router.get('/:user1/:user2', async (req, res) => {
     ]
   }).sort({ timestamp: 1 });
 
-  res.json(messages);
+ res.json({ messages });
+
 });
 
 module.exports = router;

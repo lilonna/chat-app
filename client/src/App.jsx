@@ -19,8 +19,8 @@ function App() {
 
 useEffect(() => {
   if (currentUser) {
-    const username = typeof currentUser === 'string' ? currentUser : currentUser.username;
-    console.log('Fetching conversations for:', username); // Debug line
+   const username = currentUser.username;
+    console.log('Fetching conversations for:', username); 
     getConversations(username).then(res => {
       console.log('Fetched conversation users:', res.data);
       setUsers(res.data);
@@ -40,8 +40,9 @@ useEffect(() => {
 
   const handleSelectUser = async (user) => {
     setSelectedUser(user);
-    const res = await getConversation(currentUser, user.username);
-    setMessages(res.data);
+    const res = await getConversation(currentUser.username, user.username);
+    setMessages(res.data.messages);
+    console.log("Fetched messages:", res.data);
   };
 
   if (!currentUser) {

@@ -8,11 +8,12 @@ const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, soc
 
   const sendMessage = () => {
     if (!inputMessage.trim()) return;
-    const msg = {
-      sender: currentUser,
-      recipient: selectedUser.username,
-      text: inputMessage
-    };
+  const msg = {
+  sender: currentUser.username,
+  recipient: selectedUser.username,
+  text: inputMessage
+};
+
     socket.emit('message', msg);
     setMessages(prev => [...prev, { ...msg, timestamp: new Date() }]);
     setInputMessage('');
@@ -38,9 +39,9 @@ const handleSearch = async () => {
     {/* Sidebar */}
     <div className="col-md-3 col-12 border-end bg-light p-3 d-flex flex-column" style={{ overflowY: 'auto' }}>
       <div className="mb-4 text-center">
-        <h5>Welcome, {currentUser}</h5>
+       
         <img
-          src={currentUser || '/default-avatar.png'}
+          src={currentUser.avatarUrl || '/default-avatar.png'}
           alt="Profile"
           className="rounded-circle"
           style={{ width: '60px', height: '60px' }}
@@ -85,9 +86,9 @@ const handleSearch = async () => {
 
       <div className="flex-grow-1 bg-body-secondary p-3 rounded mb-3 overflow-auto" style={{ maxHeight: '100%', minHeight: '0' }}>
         {messages.map((m, i) => (
-          <div key={i} className={`d-flex mb-2 ${m.sender === currentUser ? 'justify-content-end' : 'justify-content-start'}`}>
+         <div key={i} className={`d-flex mb-2 ${m.sender === currentUser.username ? 'justify-content-end' : 'justify-content-start'}`}>
             <div className="d-flex align-items-end">
-              {m.sender !== currentUser && (
+              {m.sender !== currentUser.username && (
                 <img
                   src={m.avatarUrl || '/default-avatar.png'}
                   alt={m.sender}
@@ -95,7 +96,7 @@ const handleSearch = async () => {
                   style={{ width: '32px', height: '32px' }}
                 />
               )}
-              <div className={`p-2 rounded ${m.sender === currentUser ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '75%' }}>
+              <div className={`p-2 rounded ${m.sender === currentUser.username ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '75%' }}>
                 <div><strong>{m.sender}</strong></div>
                 <div>{m.text}</div>
                 <div className="text-end">
