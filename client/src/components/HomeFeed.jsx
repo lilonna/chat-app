@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getFeed } from '../services/api';
 import PostCard from './PostCard';
 
+
 const HomeFeed = ({ currentUser }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);

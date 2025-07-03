@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Post = require('../models/Post');
 
 router.post('/register', async (req, res) => {
   try {
@@ -15,8 +16,20 @@ router.get('/profile/:username', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username }).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json(user);
+
+    const posts = await Post.find({ author: user._id })
+      .sort({ timestamp: -1 })
+      .populate('author', 'username avatar');
+
+    // Convert to plain JS object
+    const userObject = user.toObject();
+
+    // Safely add posts
+    userObject.posts = posts;
+
+    res.json(userObject);
   } catch (err) {
+    console.error("Profile fetch error:", err); 
     res.status(500).json({ error: 'Server error' });
   }
 });

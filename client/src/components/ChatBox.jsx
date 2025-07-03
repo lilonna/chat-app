@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { searchUsers } from "../services/api";
+import User from "../images/user.png";
 
 
 const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, socket, setMessages }) => {
@@ -41,7 +42,7 @@ const handleSearch = async () => {
       <div className="mb-4 text-center">
        
         <img
-          src={currentUser.avatarUrl || '/default-avatar.png'}
+          src={currentUser.avatarUrl || User}
           alt="Profile"
           className="rounded-circle"
           style={{ width: '60px', height: '60px' }}
@@ -84,13 +85,13 @@ const handleSearch = async () => {
     <div className="col-md-9 col-12 d-flex flex-column p-3" style={{ minHeight: '0' }}>
       <h5>Chat with {selectedUser?.username || '...'}</h5>
 
-      <div className="flex-grow-1 bg-body-secondary p-3 rounded mb-3 overflow-auto" style={{ maxHeight: '100%', minHeight: '0' }}>
+     <div className="flex-grow-1 bg-body-secondary p-3 rounded mb-3" style={{ overflowY: 'auto', height: 'calc(100vh - 200px)' }}>
         {messages.map((m, i) => (
          <div key={i} className={`d-flex mb-2 ${m.sender === currentUser.username ? 'justify-content-end' : 'justify-content-start'}`}>
             <div className="d-flex align-items-end">
               {m.sender !== currentUser.username && (
                 <img
-                  src={m.avatarUrl || '/default-avatar.png'}
+                  src={m.avatarUrl || User}
                   alt={m.sender}
                   className="rounded-circle me-2"
                   style={{ width: '32px', height: '32px' }}

@@ -1,16 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import User from "../images/user.png";
 
 const Sidebar = ({ currentUser }) => (
   <div className="p-4 bg-light border-end d-flex flex-column" style={{ minHeight: '100vh' }}>
     <div className="mb-4 text-center">
       <img
-        src={currentUser.avatar || '/default-avatar.png'}
+        src={currentUser.avatar || User}
         alt="User"
         className="rounded-circle mb-2"
         style={{ width: '70px', height: '70px', objectFit: 'cover' }}
       />
-      <h6 className="fw-bold">@{currentUser.username}</h6>
+      <h6 className="fw-bold">{currentUser.username}</h6>
     </div>
     <ul className="list-unstyled">
       <li className="mb-3">

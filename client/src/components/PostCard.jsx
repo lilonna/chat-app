@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import User from "../images/user.png";
 
 const PostCard = ({ post, currentUser, onPostUpdate }) => {
   const [commentText, setCommentText] = useState('');
@@ -50,12 +51,12 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
       <div className="card-body">
         <div className="d-flex align-items-center mb-2">
           <img
-            src={author.avatar || "/default-avatar.png"}
+            src={author.avatar || User}
             alt="Avatar"
             className="rounded-circle me-2"
             style={{ width: "40px", height: "40px", objectFit: "cover" }}
           />
-          <h6 className="mb-0 fw-bold text-primary">@{author.username || author}</h6>
+          <h6 className="mb-0 fw-bold text-primary">{author.username || author}</h6>
         </div>
 
         {post.image && (
