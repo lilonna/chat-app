@@ -17,17 +17,20 @@ function App() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
 
-useEffect(() => {
-  if (currentUser) {
-   const username = currentUser.username;
-    console.log('Fetching conversations for:', username); 
-    getConversations(username).then(res => {
-      console.log('Fetched conversation users:', res.data);
-      setUsers(res.data);
-    });
-  }
-}, [currentUser]);
+  useEffect(() => {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+    }
+  }, []);
 
+  useEffect(() => {
+    if (currentUser) {
+      getConversations(currentUser.username).then(res => {
+        setUsers(res.data);
+      });
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     socket.on('message', (msg) => {
@@ -42,21 +45,21 @@ useEffect(() => {
     setSelectedUser(user);
     const res = await getConversation(currentUser.username, user.username);
     setMessages(res.data.messages);
-    console.log("Fetched messages:", res.data);
   };
 
+ 
   if (!currentUser) {
     return <LoginForm setCurrentUser={setCurrentUser} />;
   }
+
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/home" element={<HomePage currentUser={currentUser} />} />
-        <Route path="/profile/:username" element={<ProfilePage currentUser={currentUser} />} />
+        <Route path="/home" element={<HomePage currentUser={currentUser} setCurrentUser={setCurrentUser} />} />
+        <Route path="/profile/:username" element={<ProfilePage currentUser={currentUser} setCurrentUser={setCurrentUser} />} />
         <Route path="/create-post" element={<CreatePostPage currentUser={currentUser} />} />
-
         <Route path="/chat" element={
           <ChatBox
             currentUser={currentUser}

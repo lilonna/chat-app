@@ -40,6 +40,8 @@ const HomeFeed = ({ currentUser }) => {
       ) : (
         <div className="text-muted">No posts to show.</div>
       )}
+    
+
     </div>
   );
 };

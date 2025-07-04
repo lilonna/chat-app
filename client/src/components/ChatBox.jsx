@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { searchUsers } from "../services/api";
 import User from "../images/user.png";
+import { Link } from 'react-router-dom';
 
 
 const ChatBox = ({ currentUser, users, selectedUser, onSelectUser, messages, socket, setMessages }) => {
@@ -36,6 +37,12 @@ const handleSearch = async () => {
   return (
     
 <div className="container-fluid py-3" style={{ height: '100vh' }}>
+  <div>
+   
+    <Link to="/home" className="text-decoration-none text-dark fw-medium">
+              home
+            </Link>
+  </div>
   <div className="row h-100 border rounded shadow overflow-hidden">
     {/* Sidebar */}
     <div className="col-md-3 col-12 border-end bg-light p-3 d-flex flex-column" style={{ overflowY: 'auto' }}>

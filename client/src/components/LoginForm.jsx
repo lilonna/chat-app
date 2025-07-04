@@ -20,11 +20,16 @@ function LoginForm({ setCurrentUser }) {
     try {
       if (isRegister) await register(formData);
       const res = await login(formData);
-      setCurrentUser(res.data.user);  
+      setCurrentUser(res.data.user);
+     localStorage.setItem('currentUser', JSON.stringify(res.data.user)); 
+
+  
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred. Please try again.');
     }
   };
+
+
 
   return (
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
