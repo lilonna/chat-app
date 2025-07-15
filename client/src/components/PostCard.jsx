@@ -107,7 +107,7 @@ const formatDate = (timestamp) => {
               height: '250px',
               overflow: 'hidden',
               borderRadius: '15px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
               marginBottom: '10px',
             }}
           >

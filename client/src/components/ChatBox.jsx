@@ -129,7 +129,14 @@ const handleSearch = async () => {
           onKeyDown={e => e.key === 'Enter' && sendMessage()}
         />
         <button className="btn btn-primary" onClick={sendMessage}>Send</button>
+ 
+
       </div>
+             <input
+  type="file"
+  className="form-control mt-2"
+  onChange={handleFileChange}
+/>
     </div>
   </div>
 </div>

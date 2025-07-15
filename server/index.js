@@ -3,13 +3,13 @@ const http = require('http');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { Server } = require('socket.io');
-
-
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/messages');
 const postRoutes = require('./routes/post');
+const uploadRoute = require('./routes/upload'); 
 const userRoutes = require('./routes/users');
 const setupSocket = require('./socket');
+const path = require('path');
 
 
 const app = express();
@@ -32,6 +32,8 @@ app.use('/messages', messageRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
 
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 setupSocket(io);
 
