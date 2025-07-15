@@ -41,7 +41,7 @@ const UserProfile = () => {
       ) : (
         <div className="row">
           {profile.posts.map(post => (
-            <div key={post._id} className="col-md-6 mb-2">
+            <div key={post._id} className="col-12 col-sm-6 col-md-3 mb-4">
               <PostCard post={post} />
             </div>
           ))}

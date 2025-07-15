@@ -6,7 +6,7 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
   const [commentText, setCommentText] = useState('');
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingComment, setLoadingComment] = useState(false);
-  const [showCommentBox, setShowCommentBox] = useState(false); // 👈 toggle this
+  const [showCommentBox, setShowCommentBox] = useState(false); 
 
   const likes = Array.isArray(post.likes) ? post.likes : [];
   const comments = Array.isArray(post.comments) ? post.comments : [];
@@ -45,25 +45,66 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
       setLoadingComment(false);
     }
   };
+const formatDate = (timestamp) => {
+  const postDate = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - postDate;
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+
+  const isYesterday =
+    postDate.getDate() === yesterday.getDate() &&
+    postDate.getMonth() === yesterday.getMonth() &&
+    postDate.getFullYear() === yesterday.getFullYear();
+
+  if (isYesterday) return 'Yesterday';
+
+  
+  const options = postDate.getFullYear() === now.getFullYear()
+    ? { month: 'short', day: 'numeric' } 
+    : { year: 'numeric', month: 'short', day: 'numeric' }; 
+
+  return postDate.toLocaleDateString(undefined, options);
+};
+
 
   return (
-    <div className="card mb-4 shadow-sm border-0 rounded-4">
+    <div>
+    <div className="card  shadow-sm border-0 rounded-4">
       <div className="card-body">
-        <div className="d-flex align-items-center mb-2">
-          <img
-            src={author.avatar || User}
-            alt="Avatar"
-            className="rounded-circle me-2"
-            style={{ width: "40px", height: "40px", objectFit: "cover" }}
-          />
-          <h6 className="mb-0 fw-bold text-primary">{author.username || author}</h6>
-        </div>
+
+      <div className="d-flex align-items-center justify-content-between">
+ 
+  <div className="d-flex align-items-center">
+    <img
+      src={author.avatar || User}
+      alt="Avatar"
+      className="rounded-circle me-2"
+      style={{ width: "40px", height: "40px", objectFit: "cover" }}
+    />
+    <h6 className="mb-0 fw-bold text-primary">{author.username || author}</h6>
+  </div>
+
+ 
+  <div className="text-muted small">
+    {formatDate(post.timestamp)}
+  </div>
+</div>
+
 
         {post.image && (
           <div
             style={{
-              width: '150px',
-              height: '150px',
+              width: '220px',
+              height: '250px',
               overflow: 'hidden',
               borderRadius: '15px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -78,9 +119,9 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
           </div>
         )}
 
-        <p className="text-dark mb-2" style={{ fontSize: "1rem" }}>{post.content}</p>
+        <p className="text-dark " style={{ fontSize: "1rem" }}>{post.content}</p>
 
-        {/* Likes and Comments display */}
+       
         <div className="d-flex align-items-center gap-3 mb-2" style={{ fontSize: '0.9rem', color: '#555' }}>
           <div
             className="d-flex align-items-center"
@@ -100,10 +141,7 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
             <span style={{ marginRight: 6 }}>💬</span> {comments.length}
           </div>
         </div>
-
-        <small className="text-muted">{new Date(post.timestamp).toLocaleString()}</small>
-
-        {/* Only show input if user clicked 💬 */}
+       
      {showCommentBox && (
   <>
     <div className="mt-3">
@@ -134,6 +172,8 @@ const PostCard = ({ post, currentUser, onPostUpdate }) => {
 )}
 
       </div>
+    </div>
+   
     </div>
   );
 };
