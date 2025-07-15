@@ -31,7 +31,7 @@ app.use('/auth', authRoutes);
 app.use('/messages', messageRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
-
+app.use('/api/upload', uploadRoute);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
